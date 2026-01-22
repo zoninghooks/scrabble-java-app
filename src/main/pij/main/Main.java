@@ -34,27 +34,47 @@ public class Main {
             }   
         }   
         
-        askChoice(
+        char p1Type = askChoice(
             sc, 
             "Is Player 1 a human player or a computer player? " +
             "Please enter your choice (h/c): ",
             'h', 'c'
         );
 
-        askChoice(
+        char p2Type = askChoice(
             sc, 
             "Is Player 2 a human player or a computer player? " +
             "Please enter your choice (h/c): ",
             'h', 'c'
         );
 
-        askChoice(
+        char openClosed = askChoice(
                 sc,
                 "Would you like to play an open or a closed game? " +
                 "Please enter your choice (o/c): ",
                 'o', 'c'
         );
+        boolean openGame = (openClosed == 'o');
 
+        TileBag bag = new TileBag("defaultTileBag.txt");
+
+        Rack rack1 = new Rack();
+        Rack rack2 = new Rack();
+        rack1.refillFrom(bag, Rack.DEFAULT_SIZE);
+        rack2.refillFrom(bag, Rack.DEFAULT_SIZE);
+
+        System.out.println();
+        System.out.println("Start position: " + board.getStartPositionLabel());
+
+        if (openGame) {
+            System.out.println("OPEN GAME: Player 2's tiles:");
+            System.out.println("OPEN GAME: " + rack2);
+        }
+
+        System.out.println("It's your turn, Player 1! Your tiles:");
+        System.out.println(rack1);
+
+        System.out.println();
         board.print();
         sc.close();
     }

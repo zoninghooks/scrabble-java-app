@@ -168,4 +168,10 @@ public class Board {
         if (s.length() >= width) return s.substring(0, width);
         return s + repeat(' ', width - s.length());
     }
+
+    public String getStartPositionLabel() {
+        char col = (char) ('a' + startCol);
+        int row = startRow + 1;
+        return "" + col + row;
+    }
 }
