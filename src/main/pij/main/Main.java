@@ -71,6 +71,14 @@ public class Main {
             System.out.println("OPEN GAME: " + rack2);
         }
 
+        //TEMPORARY TEST
+        
+        board.getCell(3, 3).setLetter('D'); // d4
+        board.getCell(3, 4).setLetter('I'); // e4
+        board.getCell(3, 5).setLetter('N'); // f4
+        board.getCell(3, 6).setLetter('E'); // g4
+        board.getCell(3, 7).setLetter('D'); // h4
+
         System.out.println("It's your turn, Player 1! Your tiles:");
         System.out.println(rack1);
 

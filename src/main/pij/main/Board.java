@@ -97,6 +97,10 @@ public class Board {
         }
     }
 
+    public Cell getCell(int row, int col) {
+        return cells[row][col];
+    }
+    
     // Printing
 
     public void print() {
@@ -113,7 +117,12 @@ public class Board {
             System.out.print("  ");
 
             for (int c = 0; c < m; c++) {
-                System.out.print(cellToText(cells[r][c], CELL_W));
+                Cell cell = cells[r][c];
+                if (!cell.isEmpty()) {
+                    System.out.print(padRight(String.valueOf(cell.getLetter()), CELL_W));
+                } else {
+                    System.out.print(cellToText(cell, CELL_W));
+                }
             }
 
             System.out.print(" ");

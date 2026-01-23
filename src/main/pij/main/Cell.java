@@ -14,6 +14,10 @@ public class Cell {
         return letter == '\0';
     }
 
+    public boolean hasLetter() {
+        return letter != '\0';
+    }
+
     public char getLetter() {
         return letter;
     }
