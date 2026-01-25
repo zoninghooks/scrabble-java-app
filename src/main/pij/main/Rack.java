@@ -18,6 +18,20 @@ public class Rack {
         return List.copyOf(tiles);
     }
 
+    public boolean removeLetter(char letter) {
+        for (int i = 0; i < tiles.size(); i++) {
+            if (tiles.get(i).getLetter() == letter) {
+                tiles.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean removeWildcard() {
+        return removeLetter('_');
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -89,20 +89,28 @@ public class Main {
         System.out.println("It's your turn, Player 1! Your tiles:");
         System.out.println(rack1);
 
-        System.out.println("Please enter your move in the format word,square");
+        System.out.println("Please enter your move in the format word,square. Enter ',' to pass the turn.");
         String input = sc.nextLine().trim();
 
         if (!input.equals(",")){
             try {
                 Move move = parseMove(input);
                 board.placeWord(move);
+                takeTilesFromRackForMove(board, move, rack1);
+                rack1.refillFrom(bag, Rack.DEFAULT_SIZE);
+
+                System.out.println("Your tiles are now:");
+                System.out.println(rack1);
+
+                System.out.println();
+                board.print();
+
             } catch (IllegalArgumentException e){
                 System.out.println("Invalid move: " + e.getMessage());
             }
+        } else {
+            System.out.println("Turn passed.");
         }
-
-        System.out.println();
-        board.print();
         sc.close();
     }
 
@@ -155,6 +163,36 @@ public class Main {
             }
         }
         System.out.println("Invalid choice. Please enter '" + a + "' or '" + b + "'.");
+        }
+    }
+
+    private static void takeTilesFromRackForMove(Board board, Move move, Rack rack){
+        int r = move.row;
+        int c = move.col;
+
+        for (int i = 0; i < move.word.length(); i++){
+            char typed = move.word.charAt(i);
+            char letter = Character.toUpperCase(typed);
+
+            Cell cell = board.getCell(r,c);
+
+            if (cell.isEmpty()){
+
+                boolean ok;
+
+                if (Character.isLowerCase(typed)) {
+                    ok = rack.removeWildcard();
+                } else {
+                    ok = rack.removeLetter(letter);
+                }
+
+                if (!ok) {
+                    throw new IllegalArgumentException("You don't have the tile needed for '" + typed + "'.");
+                }
+            }
+
+            if (move.dir == Direction.RIGHT) c++;
+            else r++;
         }
     }
 }
