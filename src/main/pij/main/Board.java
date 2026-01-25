@@ -61,7 +61,6 @@ public class Board {
     }
 
     private void parseStartSquare(String s) {
-        // e.g. "d7"
         this.startCol = s.charAt(0) - 'a';
         this.startRow = Integer.parseInt(s.substring(1)) - 1;
     }
@@ -99,6 +98,34 @@ public class Board {
 
     public Cell getCell(int row, int col) {
         return cells[row][col];
+    }
+
+    public void placeWord(Move move) {
+        int r = move.row;
+        int c = move.col;
+
+        for (int i = 0; i < move.word.length(); i++) {
+            char ch = Character.toUpperCase(move.word.charAt(i));
+
+            if (r < 0 || r >= n || c < 0 || c >= m) {
+                throw new IllegalArgumentException("Move goes out of bounds.");
+            }
+
+            Cell cell = cells[r][c];
+
+            if (!cell.isEmpty() && cell.getLetter() != ch) {
+                throw new IllegalArgumentException("Cell conflict at "
+                        + (char) ('a' + c) + (r + 1));
+            }
+
+            cell.setLetter(ch);
+
+            if (move.dir == Direction.RIGHT) {
+                c++;
+            } else {
+                r++;
+            }
+        }
     }
     
     // Printing

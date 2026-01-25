@@ -56,6 +56,9 @@ public class Main {
         );
         boolean openGame = (openClosed == 'o');
 
+        System.out.println();
+        board.print();
+
         TileBag bag = new TileBag("defaultTileBag.txt");
 
         Rack rack1 = new Rack();
@@ -71,20 +74,65 @@ public class Main {
             System.out.println("OPEN GAME: " + rack2);
         }
 
-        //TEMPORARY TEST
+        /* 
         
+        //TEMPORARY TEST
+
         board.getCell(3, 3).setLetter('D'); // d4
         board.getCell(3, 4).setLetter('I'); // e4
         board.getCell(3, 5).setLetter('N'); // f4
         board.getCell(3, 6).setLetter('E'); // g4
         board.getCell(3, 7).setLetter('D'); // h4
 
+        */
+
         System.out.println("It's your turn, Player 1! Your tiles:");
         System.out.println(rack1);
+
+        System.out.println("Please enter your move in the format word,square");
+        String input = sc.nextLine().trim();
+
+        if (!input.equals(",")){
+            try {
+                Move move = parseMove(input);
+                board.placeWord(move);
+            } catch (IllegalArgumentException e){
+                System.out.println("Invalid move: " + e.getMessage());
+            }
+        }
 
         System.out.println();
         board.print();
         sc.close();
+    }
+
+    private static Move parseMove(String input){
+        String[] parts = input.split(",", -1);
+        if (parts.length != 2) throw new IllegalArgumentException("Bad move format. Use word,square");
+
+        String word = parts[0].trim();
+        String pos = parts[1].trim().toLowerCase();
+
+        if (word.isEmpty() || pos.isEmpty()) throw new IllegalArgumentException("Bad move format. Use word,square");
+
+        Direction dir;
+        int row, col;
+
+        if (Character.isLetter(pos.charAt(0))) {
+            dir = Direction.DOWN;
+            col = pos.charAt(0) - 'a';
+            row = Integer.parseInt(pos.substring(1)) - 1;
+        } else {
+            int i = 0;
+            while (i < pos.length() && Character.isDigit(pos.charAt(i))) i++;
+            if (i == 0 || i >= pos.length()) throw new IllegalArgumentException("Bad sqaure: " + pos);
+
+            row = Integer.parseInt(pos.substring(0, i)) - 1;
+            col = pos.charAt(i) - 'a';
+            dir = Direction.RIGHT;
+        }
+
+        return new Move(word, row, col, dir);
     }
 
     private static void printBanner(){
