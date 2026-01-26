@@ -128,6 +128,48 @@ public class Board {
         }
     }
     
+    public void validatePlacement(Move move) {
+        int r = move.row;
+        int c = move.col;
+
+        boolean boardHasTiles = hasAnyPlacedTiles();
+        boolean touchesExisting = false;
+        boolean placedNewTile = false;
+
+        for (int i = 0; i < move.word.length(); i++) {
+            char ch = Character.toUpperCase(move.word.charAt(i));
+
+            if (r < 0 || r >= n || c < 0 || c >=m) {
+                throw new IllegalArgumentException("Move goes out of bounds.");
+            }
+
+            Cell cell = cells[r][c];
+
+            if (!cell.isEmpty()) {
+                if (cell.getLetter() != ch) {
+                    throw new IllegalArgumentException("Cell conflict at " + (char)('a' + c) + (r + 1));
+                    }
+                    touchesExisting = true;
+                } else {
+                    placedNewTile = true;
+                    if (boardHasTiles && hasAdjacentTile(r, c)) {
+                        touchesExisting = true;
+                    }
+                }
+
+            if (move.dir == Direction.RIGHT) c++;
+            else r++;
+
+            if (!placedNewTile) {
+                throw new IllegalArgumentException("Move must place at least one new tile.");
+            }
+
+            if (boardHasTiles && !touchesExisting) {
+                throw new IllegalArgumentException("Move is not connected to existing tiles.");
+            }
+        }
+    }
+
     // Printing
 
     public void print() {
@@ -209,5 +251,22 @@ public class Board {
         char col = (char) ('a' + startCol);
         int row = startRow + 1;
         return "" + col + row;
+    }
+
+    private boolean hasAnyPlacedTiles() {
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                if (!cells[r][c].isEmpty()) return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasAdjacentTile(int r, int c) {
+        if (r > 0 && !cells[r - 1][c].isEmpty()) return true;
+        if (r < n - 1 && !cells[r + 1][c].isEmpty()) return true;
+        if (c > 0 && !cells[r][c - 1].isEmpty()) return true;
+        if (c < m - 1 && !cells[r][c + 1].isEmpty()) return true;
+        return false;
     }
 }

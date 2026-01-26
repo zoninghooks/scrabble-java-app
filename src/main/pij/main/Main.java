@@ -69,11 +69,34 @@ public class Main {
         System.out.println();
         System.out.println("Start position: " + board.getStartPositionLabel());
 
+        boolean p1Human = (p1Type == 'h');
+        boolean p2Human = (p2Type == 'h');
+
+        int consecutivePasses = 0;
+        int currentPlayer = 1;
+
+        while (true){
+            boolean passed;
+
+            if (currentPlayer == 1){ 
+                passed = playTurn(sc, "Player 1", p1Human, openGame, board, rack1, rack2, bag);
+            } else {
+                passed = playTurn(sc, "Player 2", p2Human, openGame, board, rack2, rack1, bag);
+            }
+            consecutivePasses = passed ? consecutivePasses + 1 : 0;
+
+            if (consecutivePasses >= 2) {
+                System.out.println("Both players passed. Game over.");
+                break;
+            }
+            currentPlayer = (currentPlayer == 1) ? 2 : 1;
+        }
+
         if (openGame) {
             System.out.println("OPEN GAME: Player 2's tiles:");
             System.out.println("OPEN GAME: " + rack2);
         }
-
+        
         /* 
         
         //TEMPORARY TEST
@@ -85,32 +108,6 @@ public class Main {
         board.getCell(3, 7).setLetter('D'); // h4
 
         */
-
-        System.out.println("It's your turn, Player 1! Your tiles:");
-        System.out.println(rack1);
-
-        System.out.println("Please enter your move in the format word,square. Enter ',' to pass the turn.");
-        String input = sc.nextLine().trim();
-
-        if (!input.equals(",")){
-            try {
-                Move move = parseMove(input);
-                board.placeWord(move);
-                takeTilesFromRackForMove(board, move, rack1);
-                rack1.refillFrom(bag, Rack.DEFAULT_SIZE);
-
-                System.out.println("Your tiles are now:");
-                System.out.println(rack1);
-
-                System.out.println();
-                board.print();
-
-            } catch (IllegalArgumentException e){
-                System.out.println("Invalid move: " + e.getMessage());
-            }
-        } else {
-            System.out.println("Turn passed.");
-        }
         sc.close();
     }
 
@@ -195,4 +192,54 @@ public class Main {
             else r++;
         }
     }
+
+    private static boolean playTurn(
+        Scanner sc,
+        String playerName,
+        boolean isHuman,
+        boolean openGame,
+        Board board,
+        Rack ownRack,
+        Rack otherRack,
+        TileBag bag
+    ) {
+        if (openGame) {
+            System.out.println("Open Game: " + (playerName.equals("Player 1") ? "Player 2" : "Player 1") + "'s tiles:");
+            System.out.println("Open Game: " + otherRack);
+        }
+
+        System.out.println("It's your turn, " + playerName + " ! Your tiles:");
+        System.out.println(ownRack);
+        System.out.println("Please enter your move in the format word, square. Enter ',' to pass the turn");
+
+        String input;
+
+        if (isHuman) {
+            input = sc.nextLine().trim();
+        } else {
+            input = ",";
+            System.out.println(input);
+        }
+        
+        if (input.equals(",")) {
+            System.out.println(playerName + " passed.");
+            return true;
+        }
+
+        try {
+            Move move = parseMove(input);
+            board.validatePlacement(move);
+            takeTilesFromRackForMove(board, move, ownRack);
+            board.placeWord(move);
+            ownRack.refillFrom(bag, Rack.DEFAULT_SIZE);
+
+            System.out.println();
+            board.print();
+            return false;
+        } catch (IllegalArgumentException e){
+            System.out.println("Invalid move: " + e.getMessage());
+            return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag);
+        }
+
+        }
 }
