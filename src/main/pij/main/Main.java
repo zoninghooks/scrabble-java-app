@@ -60,7 +60,7 @@ public class Main {
 
         System.out.println();
         board.print();
-
+        WordList dict = new WordList("wordlist.txt");
         TileBag bag = new TileBag("defaultTileBag.txt");
 
         Rack rack1 = new Rack();
@@ -84,7 +84,7 @@ public class Main {
             int gained;
 
             if (currentPlayer == 1) {
-                gained = playTurn(sc, "Player 1", p1Human, openGame, board, rack1, rack2, bag);
+                gained = playTurn(sc, "Player 1", p1Human, openGame, board, rack1, rack2, bag, dict);
                 if (gained == Integer.MIN_VALUE) {
                     passStreak++;
                 } else {
@@ -92,7 +92,7 @@ public class Main {
                     passStreak = 0;
                 }
             } else {
-                gained = playTurn(sc, "Player 2", p2Human, openGame, board, rack2, rack1, bag);
+                gained = playTurn(sc, "Player 2", p2Human, openGame, board, rack2, rack1, bag, dict);
                 if (gained == Integer.MIN_VALUE) {
                     passStreak++;
                 } else {
@@ -222,7 +222,8 @@ public class Main {
         Board board,
         Rack ownRack,
         Rack otherRack,
-        TileBag bag
+        TileBag bag,
+        WordList dict
     ) {
         if (openGame) {
             System.out.println("Open Game: " + (playerName.equals("Player 1") ? "Player 2" : "Player 1") + "'s tiles:");
@@ -249,6 +250,10 @@ public class Main {
 
         try {
             Move move = parseMove(input);
+            String wordUpper = move.word.toUpperCase();
+            if (!dict.contains(wordUpper)) {
+                throw new IllegalArgumentException("Word not in dictionary: " + wordUpper);
+            }
             board.validatePlacement(move);
             var placed = takeTilesFromRackForMove(board, move, ownRack);
             int gained = board.scoreMove(move, placed);
@@ -261,7 +266,7 @@ public class Main {
             return gained;
         } catch (IllegalArgumentException e){
             System.out.println("Invalid move: " + e.getMessage());
-            return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag);
+            return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag, dict);
         }
 
     }
