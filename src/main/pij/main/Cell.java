@@ -1,7 +1,7 @@
 package pij.main;
 
 public class Cell {
-    private char letter = '\0';
+    private Tile tile;
     private final int letterMult;
     private final int wordMult;
 
@@ -11,19 +11,15 @@ public class Cell {
     }
 
     public boolean isEmpty() {
-        return letter == '\0';
+        return tile == null;
     }
 
-    public boolean hasLetter() {
-        return letter != '\0';
+    public Tile getTile() {
+        return tile;
     }
 
-    public char getLetter() {
-        return letter;
-    }
-
-    public void setLetter(char letter) {
-        this.letter = letter;
+    public void setTile(Tile tile) {
+        this.tile = tile;
     }
 
     public int getLetterMult() {

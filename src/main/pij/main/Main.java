@@ -1,6 +1,8 @@
 package pij.main;
 
 import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -72,29 +74,42 @@ public class Main {
         boolean p1Human = (p1Type == 'h');
         boolean p2Human = (p2Type == 'h');
 
-        int consecutivePasses = 0;
+        int p1Score = 0;
+        int p2Score = 0;
+
+        int passStreak = 0;
         int currentPlayer = 1;
 
-        while (true){
-            boolean passed;
+        while (true) {
+            int gained;
 
-            if (currentPlayer == 1){ 
-                passed = playTurn(sc, "Player 1", p1Human, openGame, board, rack1, rack2, bag);
+            if (currentPlayer == 1) {
+                gained = playTurn(sc, "Player 1", p1Human, openGame, board, rack1, rack2, bag);
+                if (gained == Integer.MIN_VALUE) {
+                    passStreak++;
+                } else {
+                    p1Score += gained;
+                    passStreak = 0;
+                }
             } else {
-                passed = playTurn(sc, "Player 2", p2Human, openGame, board, rack2, rack1, bag);
+                gained = playTurn(sc, "Player 2", p2Human, openGame, board, rack2, rack1, bag);
+                if (gained == Integer.MIN_VALUE) {
+                    passStreak++;
+                } else {
+                    p2Score += gained;
+                    passStreak = 0;
+                }
             }
-            consecutivePasses = passed ? consecutivePasses + 1 : 0;
 
-            if (consecutivePasses >= 2) {
+            System.out.println("Player 1 score: " + p1Score);
+            System.out.println("Player 2 score: " + p2Score);
+
+            if (passStreak >= 2) {
                 System.out.println("Both players passed. Game over.");
                 break;
             }
-            currentPlayer = (currentPlayer == 1) ? 2 : 1;
-        }
 
-        if (openGame) {
-            System.out.println("OPEN GAME: Player 2's tiles:");
-            System.out.println("OPEN GAME: " + rack2);
+            currentPlayer = (currentPlayer == 1) ? 2 : 1;
         }
         
         /* 
@@ -163,9 +178,11 @@ public class Main {
         }
     }
 
-    private static void takeTilesFromRackForMove(Board board, Move move, Rack rack){
+    private static Map<String, Tile> takeTilesFromRackForMove(Board board, Move move, Rack rack){
         int r = move.row;
         int c = move.col;
+
+        Map<String, Tile> placed = new HashMap<>();
 
         for (int i = 0; i < move.word.length(); i++){
             char typed = move.word.charAt(i);
@@ -174,26 +191,30 @@ public class Main {
             Cell cell = board.getCell(r,c);
 
             if (cell.isEmpty()){
-
-                boolean ok;
+                Tile t;
 
                 if (Character.isLowerCase(typed)) {
-                    ok = rack.removeWildcard();
+                    t = rack.removeWildcardTile();
+                    if (t == null) {
+                        throw new IllegalArgumentException("You don't have a wildcard");
+                    }
+                    t.assign(letter);
                 } else {
-                    ok = rack.removeLetter(letter);
+                    t = rack.removeLetterTile(letter);
+                    if (t == null) {
+                        throw new IllegalArgumentException("You don't have the tile needed for '" + typed + "'.");
+                    }
                 }
-
-                if (!ok) {
-                    throw new IllegalArgumentException("You don't have the tile needed for '" + typed + "'.");
-                }
+                placed.put(r + "," + c, t);
             }
 
             if (move.dir == Direction.RIGHT) c++;
             else r++;
         }
+        return placed;
     }
 
-    private static boolean playTurn(
+    private static int playTurn(
         Scanner sc,
         String playerName,
         boolean isHuman,
@@ -223,23 +244,25 @@ public class Main {
         
         if (input.equals(",")) {
             System.out.println(playerName + " passed.");
-            return true;
+            return Integer.MIN_VALUE;
         }
 
         try {
             Move move = parseMove(input);
             board.validatePlacement(move);
-            takeTilesFromRackForMove(board, move, ownRack);
-            board.placeWord(move);
+            var placed = takeTilesFromRackForMove(board, move, ownRack);
+            int gained = board.scoreMove(move, placed);
+            board.placeWord(move, placed);
             ownRack.refillFrom(bag, Rack.DEFAULT_SIZE);
 
             System.out.println();
             board.print();
-            return false;
+
+            return gained;
         } catch (IllegalArgumentException e){
             System.out.println("Invalid move: " + e.getMessage());
             return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag);
         }
 
-        }
+    }
 }

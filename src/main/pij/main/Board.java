@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
+import java.util.Map;
 
 public class Board {
 
@@ -100,31 +101,22 @@ public class Board {
         return cells[row][col];
     }
 
-    public void placeWord(Move move) {
+    public void placeWord(Move move, Map<String, Tile> placed) {
         int r = move.row;
         int c = move.col;
 
         for (int i = 0; i < move.word.length(); i++) {
-            char ch = Character.toUpperCase(move.word.charAt(i));
-
-            if (r < 0 || r >= n || c < 0 || c >= m) {
-                throw new IllegalArgumentException("Move goes out of bounds.");
-            }
-
             Cell cell = cells[r][c];
 
-            if (!cell.isEmpty() && cell.getLetter() != ch) {
-                throw new IllegalArgumentException("Cell conflict at "
-                        + (char) ('a' + c) + (r + 1));
+            if (cell.isEmpty()) {
+                String key = r + "," + c;
+                Tile t = placed.get(key);
+                if (t == null) throw new IllegalStateException("Missing tile for " + key);
+                cell.setTile(t);
             }
 
-            cell.setLetter(ch);
-
-            if (move.dir == Direction.RIGHT) {
-                c++;
-            } else {
-                r++;
-            }
+            if (move.dir == Direction.RIGHT) c++; 
+            else r++;
         }
     }
     
@@ -146,7 +138,7 @@ public class Board {
             Cell cell = cells[r][c];
 
             if (!cell.isEmpty()) {
-                if (cell.getLetter() != ch) {
+                if (cell.getTile().getBoardLetter() != ch) {
                     throw new IllegalArgumentException("Cell conflict at " + (char)('a' + c) + (r + 1));
                     }
                     touchesExisting = true;
@@ -170,6 +162,43 @@ public class Board {
         }
     }
 
+    public int scoreMove (Move move, Map<String, Tile> placed) {
+        int r = move.row;
+        int c = move.col;
+
+        int sum = 0;
+        int wordFactor = 1;
+        int newTiles = 0;
+
+        for (int i = 0; i < move.word.length(); i++){
+            Cell cell = cells[r][c];
+
+            if (!cell.isEmpty()) {
+                sum += cell.getTile().getValue();
+            } else{
+                String key = r + "," + c;
+                Tile t = placed.get(key);
+
+                if (t == null) {
+                    throw new IllegalStateException("Missing placed tile at " + key);
+                }
+
+                sum += t.getValue() * cell.getLetterMult();
+                wordFactor *= cell.getWordMult();
+                newTiles++;
+            }
+
+            if (move.dir == Direction.RIGHT) c++;
+            else r++;
+        }
+
+        int total = sum * wordFactor;
+
+        if (newTiles == 7) total += 60;
+
+        return total;
+    }
+
     // Printing
 
     public void print() {
@@ -188,7 +217,7 @@ public class Board {
             for (int c = 0; c < m; c++) {
                 Cell cell = cells[r][c];
                 if (!cell.isEmpty()) {
-                    System.out.print(padRight(String.valueOf(cell.getLetter()), CELL_W));
+                    System.out.print(padRight(String.valueOf(cell.getTile()), CELL_W));
                 } else {
                     System.out.print(cellToText(cell, CELL_W));
                 }

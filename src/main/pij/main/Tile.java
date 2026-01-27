@@ -3,26 +3,33 @@ package pij.main;
 public final class Tile {
     private final char letter; 
     private final int value;
+    private char assigned = '\0';
 
     public Tile(char letter, int value) {
         this.letter = letter;
         this.value = value;
     }
 
-    public char getLetter() {
-        return letter;
+    public boolean isWildcard() {
+        return letter == '_';
     }
 
     public int getValue() {
         return value;
     }
 
-    public boolean isWildcard() {
-        return letter == '_';
+    public char getBoardLetter() {
+        if (isWildcard()) return assigned;
+        return letter;
+    }
+
+    public void assign(char upperLetter) {
+        if (!isWildcard()) return;
+        this.assigned = upperLetter;
     }
 
     @Override
     public String toString() {
-        return "[" + letter + value + "]";
+        return "[" + (isWildcard() ? "_" : letter) + value + "]";
     }
 }
