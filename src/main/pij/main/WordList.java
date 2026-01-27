@@ -28,7 +28,8 @@ public final class WordList {
     }
 
     public boolean contains(String word) {
-        return words.contains(word.toUpperCase());
+        if (word == null) return false;
+        return words.contains(word.trim().toUpperCase());
     }
 
     private InputStream openStream(String filename) throws IOException {

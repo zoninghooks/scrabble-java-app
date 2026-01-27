@@ -256,6 +256,7 @@ public class Main {
             }
             board.validatePlacement(move);
             var placed = takeTilesFromRackForMove(board, move, ownRack);
+            board.validateWords(move, placed, dict);
             int gained = board.scoreMove(move, placed);
             board.placeWord(move, placed);
             ownRack.refillFrom(bag, Rack.DEFAULT_SIZE);

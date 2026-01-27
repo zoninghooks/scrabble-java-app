@@ -258,6 +258,32 @@ public class Board {
         return padRight(s, width);
     }
 
+    public void validateWords(Move move, Map<String, Tile> placed, WordList dict) {
+        int mainDr = (move.dir == Direction.DOWN) ? 1 : 0;
+        int mainDc = (move.dir == Direction.RIGHT) ? 1 : 0;
+
+        String mainWord = buildWord(move.row, move.col, mainDr, mainDc, placed);
+        if (mainWord.length() >= 2 && !dict.contains(mainWord)) {
+            throw new IllegalArgumentException("Word not in dictionary: " + mainWord);
+        }
+
+        for (String posKey : placed.keySet()) {
+            String[] parts = posKey.split(",");
+            int r = Integer.parseInt(parts[0]);
+            int c = Integer.parseInt(parts[1]);
+
+            int crossDr = (move.dir == Direction.RIGHT) ? 1 : 0;
+            int crossDc = (move.dir == Direction.DOWN) ? 1 : 0;
+
+            String cross = buildWord(r, c, crossDr, crossDc, placed);
+
+            if (cross.length() >= 2 && !dict.contains(cross)) {
+                throw new IllegalArgumentException("Cross-word not in dictionary: " + cross);
+            }
+        }
+
+    }
+
     // Helpers
 
     private static String repeat(char ch, int count) {
@@ -297,5 +323,39 @@ public class Board {
         if (c > 0 && !cells[r][c - 1].isEmpty()) return true;
         if (c < m - 1 && !cells[r][c + 1].isEmpty()) return true;
         return false;
+    }
+
+    private String key(int r, int c) {
+        return r + "," + c;
+    }
+
+    private boolean isEmptyAt(int r, int c, Map<String, Tile> placed) {
+        if (!cells[r][c].isEmpty()) return false;
+        return !placed.containsKey(key(r,c));
+    }
+
+    private char letterAt(int r, int c, Map<String, Tile> placed) {
+        if (!cells[r][c].isEmpty()) {
+            return cells[r][c].getTile().getBoardLetter();
+        }
+        Tile t = placed.get(key(r,c));
+        if (t == null) throw new IllegalArgumentException("Missing tile at " + key(r, c));
+        return t.getBoardLetter();
+    }
+
+    private String buildWord(int r, int c, int dr, int dc, Map<String, Tile> placed) {
+        int rr = r, cc = c;
+        while (rr - dr >= 0 && rr - dr < n && cc - dc >= 0 && cc - dc < m
+            && !isEmptyAt(rr - dc, cc - dc, placed)) {
+                rr -= dr;
+                cc -= dc;
+            }
+        StringBuilder sb = new StringBuilder();
+        while (rr >= 0 && rr < n & cc >= 0 && cc < m && !isEmptyAt(rr, cc, placed)) {
+            sb.append(letterAt(rr, cc, placed));
+            rr += dr;
+            cc += dc;
+        }
+        return sb.toString();
     }
 }
