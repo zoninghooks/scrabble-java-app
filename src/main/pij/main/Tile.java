@@ -43,4 +43,12 @@ public final class Tile {
         }
         return letter;
     }
+
+    public String toBoardString() {
+        if (isWildcard()) {
+            char shown = (assigned == '\0') ? '_' : Character.toLowerCase(assigned);
+            return "" + shown + value;
+        }
+        return "" + letter + value;
+    }
 }
