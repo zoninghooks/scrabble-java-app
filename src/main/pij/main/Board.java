@@ -346,12 +346,12 @@ public class Board {
     private String buildWord(int r, int c, int dr, int dc, Map<String, Tile> placed) {
         int rr = r, cc = c;
         while (rr - dr >= 0 && rr - dr < n && cc - dc >= 0 && cc - dc < m
-            && !isEmptyAt(rr - dc, cc - dc, placed)) {
-                rr -= dr;
-                cc -= dc;
-            }
+                && !isEmptyAt(rr - dr, cc - dc, placed)) {
+            rr -= dr;
+            cc -= dc;
+        }
         StringBuilder sb = new StringBuilder();
-        while (rr >= 0 && rr < n & cc >= 0 && cc < m && !isEmptyAt(rr, cc, placed)) {
+        while (rr >= 0 && rr < n && cc >= 0 && cc < m && !isEmptyAt(rr, cc, placed)) {
             sb.append(letterAt(rr, cc, placed));
             rr += dr;
             cc += dc;
