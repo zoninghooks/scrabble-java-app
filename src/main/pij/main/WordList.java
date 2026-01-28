@@ -36,7 +36,7 @@ public final class WordList {
         InputStream in = WordList.class.getClassLoader().getResourceAsStream(filename);
         if (in != null) return in;
 
-        in = WordList.class.getClassLoader().getResourceAsStream(filename);
+        in = WordList.class.getClassLoader().getResourceAsStream("resources/" + filename);
         if (in != null) return in;
 
         Path here = Paths.get("").toAbsolutePath();
