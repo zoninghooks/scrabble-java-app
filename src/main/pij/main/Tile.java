@@ -27,6 +27,10 @@ public final class Tile {
         if (!isWildcard()) return;
         this.assigned = upperLetter;
     }
+    
+    public char getLetter() {
+        return letter;
+    }
 
     @Override
     public String toString() {

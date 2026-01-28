@@ -21,7 +21,7 @@ public class Rack {
     public Tile removeLetterTile(char letter) {
         for (int i = 0; i < tiles.size(); i++) {
             Tile t = tiles.get(i);
-            if (t.getBoardLetter() == letter) {
+            if (!t.isWildcard() && t.getLetter() == letter) {
                 tiles.remove(i);
                 return t;
             }
@@ -30,7 +30,14 @@ public class Rack {
     }
 
     public Tile removeWildcardTile() {
-        return removeLetterTile('_');
+        for (int i = 0; i < tiles.size(); i++) {
+            Tile t = tiles.get(i);
+            if (t.isWildcard()) {
+                tiles.remove(i);
+                return t;
+            }
+        }
+        return null;
     }
     
     @Override
