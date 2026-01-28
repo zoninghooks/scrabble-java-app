@@ -49,4 +49,8 @@ public class Rack {
         }
         return sb.toString();
     }
+
+    public Rack(Rack other) {
+        this.tiles.addAll(other.getTiles());
+    }
 }

@@ -47,4 +47,8 @@ public final class WordList {
 
         throw new FileNotFoundException("Could not find " + filename);
     }
+
+    public Iterable<String> allWords() {
+        return words;
+    }
 }
