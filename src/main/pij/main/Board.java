@@ -131,7 +131,7 @@ public class Board {
         for (int i = 0; i < move.word.length(); i++) {
             char ch = Character.toUpperCase(move.word.charAt(i));
 
-            if (r < 0 || r >= n || c < 0 || c >=m) {
+            if (r < 0 || r >= n || c < 0 || c >= m) {
                 throw new IllegalArgumentException("Move goes out of bounds.");
             }
 
@@ -140,14 +140,14 @@ public class Board {
             if (!cell.isEmpty()) {
                 if (cell.getTile().getBoardLetter() != ch) {
                     throw new IllegalArgumentException("Cell conflict at " + (char)('a' + c) + (r + 1));
-                    }
-                    touchesExisting = true;
-                } else {
-                    placedNewTile = true;
-                    if (boardHasTiles && hasAdjacentTile(r, c)) {
-                        touchesExisting = true;
-                    }
                 }
+                touchesExisting = true;
+            } else {
+                placedNewTile = true;
+                if (boardHasTiles && hasAdjacentTile(r, c)) {
+                    touchesExisting = true;
+                }
+            }
 
             if (move.dir == Direction.RIGHT) c++;
             else r++;
