@@ -15,4 +15,88 @@ public class ComputerPlayer {
             this.score = score;
         }
     }
+
+    public static Result findBestMove(Board board, Rack rack, WordList dict) {
+        List<int[]> anchors = findAnchors(board);
+
+        if (anchors.isEmpty()) {
+            int[] start = parseLabel(board.getStartPositionLabel());
+            anchors.add(start);
+        }
+
+        Result best = null;
+
+        for (String w : dict.allWords()) {
+            int len = w.length();
+            if (len < 2 || len > Rack.DEFAULT_SIZE) continue;
+
+            for (DIrection dir : new Direction[]{DIrection.Right, Direction.DOWN}) {
+                for (int[] a : anchors) {
+                    int ar = a[0], ac =a[1];
+                    for (int i = 0; i < len; i++) {
+                        int sr = ar - (dir == Direction.DOWN ? i : 0);
+                        int sc = ac - (dir == Direction.RIGHT ? i : 0);
+
+                        Move move = new Move (w, sr, sc, dir);
+
+                        Rack tmpRack = new Rack(rack);
+                        Map<String, Tile> placed;
+                        try {
+                            board.validatePlacement(move);
+                            placed = Main.takeTilesFromRackForMove(board, move, tmpRack);
+                            board.validateWords(move, placed, dict);
+
+                            int score = board.scoreMove(move, placed);
+
+                            if (best == null || score > best.score) {
+                                best = new Result(move, placed, score);
+                            }
+                        }
+                    }
+                }
+            }
+        } 
+        return best;
+    }
+
+    //helpers
+
+    private static List<int[]> findAnchors (Board board) {
+        ArrayList<int[]> out = new ArrayList<>();
+        int n = board.row();
+        int m = board.cols();
+
+        boolean anyTile = false;
+
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                Cell cell = board.getCell(r, c);
+                if (!cell.isEmpty()) {
+                    anyTile = true;
+                    continue;
+                }
+                if (hasAdjacentTile(board, r, c, n, m)) {
+                    out.add(new int[]{r, c});
+                }
+            }
+        }
+        if (anyTile) out.clear();
+        return out;
+    }
+
+    private static boolean hasAdjacentTile(Board board, int r, int c, int n, int m) {
+        if (r > 0 && !board.getCell(r - 1, c).isEmpty ()) return true;
+        if (r + 1 < n && !board.getCell(r + 1, c).isEmpty()) return true;
+        if (c > 0 && !board.getCell(r, c - 1).isEmpty()) return true;
+        if (c + 1 < m && !board.getCell(r, c + 1).isEmpty()) return true;
+        return false;
+    }
+    
+    private static int[] parseLabel(String s) {
+        s = s.trim().toLowerCase();
+        int col = s.charAt(0) - 'a';
+        int row = Integer.parseInt(s.substring(1)) - 1;
+        return new int[]{row, col};
+    }
 }
+

@@ -15,6 +15,9 @@ public class Board {
     private final int n;        // rows
     private final Cell[][] cells;
 
+    public int rows() {return n;}
+    public int cols() {return m;}
+
     private int startRow;
     private int startCol;
 
