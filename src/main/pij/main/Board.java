@@ -217,7 +217,8 @@ public class Board {
             for (int c = 0; c < m; c++) {
                 Cell cell = cells[r][c];
                 if (!cell.isEmpty()) {
-                    System.out.print(padRight(String.valueOf(cell.getTile()), CELL_W));
+                    char ch = cell.getTile().getDisplayChar();
+                    System.out.print(padRight(String.valueOf(ch), CELL_W));
                 } else {
                     System.out.print(cellToText(cell, CELL_W));
                 }

@@ -36,4 +36,11 @@ public final class Tile {
     public String toString() {
         return "[" + (isWildcard() ? "_" : letter) + value + "]";
     }
+
+    public char getDisplayChar() {
+        if (isWildcard()) {
+            return Character.toLowerCase(assigned);
+        }
+        return letter;
+    }
 }
