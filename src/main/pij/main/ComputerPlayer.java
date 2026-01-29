@@ -20,7 +20,7 @@ public class ComputerPlayer {
         List<int[]> anchors = findAnchors(board);
 
         int tried = 0;
-        int legal =0;
+        int legal = 0;
 
         if (anchors.isEmpty()) {
             int[] start = parseLabel(board.getStartPositionLabel());
@@ -47,6 +47,7 @@ public class ComputerPlayer {
                         try {
                             int needed = countNeededTiles(board, move);
                             if (needed == 0 || needed > Rack.DEFAULT_SIZE) continue;
+                            if (!rackCanCover(board, move, rack)) continue; // avoid checking impossible moves
                             board.validatePlacement(move);
                             Rack tmpRack = new Rack(rack);
                             Map<String, Tile> placed = Main.takeTilesFromRackForMove(board, move, tmpRack);
@@ -73,8 +74,6 @@ public class ComputerPlayer {
         ArrayList<int[]> out = new ArrayList<>();
         int n = board.rows();
         int m = board.cols();
-
-        boolean anyTile = false;
 
         for (int r = 0; r < n; r++) {
             for (int c = 0; c < m; c++) {
@@ -116,6 +115,49 @@ public class ComputerPlayer {
             else r++;
         }
         return needed;
+    }
+
+    private static boolean rackCanCover(Board board, Move move, Rack rack) {
+        int[] need = new int[26];
+
+        int r = move.row, c = move.col;
+        for (int i = 0; i < move.word.length(); i++) {
+            if (r < 0 || r >= board.rows() || c < 0 || c >= board.cols()) return false;
+
+            if (board.getCell(r, c).isEmpty()) {
+                char ch = Character.toUpperCase(move.word.charAt(i));
+                if (ch >= 'A' && ch <= 'Z') need[ch - 'A']++;
+            }
+
+            if (move.dir == Direction.RIGHT) c++;
+            else r++;
+        }
+
+        int[] have = rackLetterCounts(rack);
+        int wild = rackWildcardCounts(rack);
+
+        int wildNeeded = 0;
+        for (int i = 0; i < 26; i++) {
+            int missing = Math.max(0, need[i] - have[i]);
+            wildNeeded += missing;
+        }
+        return wildNeeded <= wild;
+    }
+
+    private static int[] rackLetterCounts(Rack rack) {
+        int[] cnt = new int[26];
+        for (Tile t : rack.getTiles()) {
+            if (t.isWildcard()) continue;
+            char ch = t.getBoardLetter();
+            if (ch >= 'A' && ch <= 'Z') cnt[ch - 'A']++;
+        }
+        return cnt;
+    }
+
+    private static int rackWildcardCounts(Rack rack) {
+        int w = 0;
+        for (Tile t : rack.getTiles()) if (t.isWildcard()) w++;
+        return w;
     }
 }
 
