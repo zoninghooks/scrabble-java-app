@@ -220,7 +220,6 @@ public class Board {
             for (int c = 0; c < m; c++) {
                 Cell cell = cells[r][c];
                 if (!cell.isEmpty()) {
-                    char ch = cell.getTile().getDisplayChar();
                     System.out.print(padRight(cell.getTile().toBoardString(), CELL_W));
                 } else {
                     System.out.print(cellToText(cell, CELL_W));

@@ -50,6 +50,9 @@ public class Rack {
         return sb.toString();
     }
 
+    public Rack() {
+    }
+
     public Rack(Rack other) {
         this.tiles.addAll(other.getTiles());
     }

@@ -239,8 +239,18 @@ public class Main {
         if (isHuman) {
             input = sc.nextLine().trim();
         } else {
-            input = ",";
-            System.out.println(input);
+            ComputerPlayer.Result best = ComputerPlayer.findBestMove(board, ownRack, dict);
+            if (best == null){
+                input = ",";
+                System.out.println(input);
+            } else {
+                Move mv = best.move;
+                String square = (mv.dir == Direction.DOWN)
+                ? "" + (char)('a' + mv.col) + (mv.row + 1)
+                : "" + (mv.row + 1) + (char)('a' + mv.col);
+                input = mv.word + "," + square;
+                System.out.println(input);
+            }
         }
         
         if (input.equals(",")) {
@@ -250,6 +260,7 @@ public class Main {
 
         try {
             Move move = parseMove(input);
+            board.validatePlacement(move);
             String wordUpper = move.word.toUpperCase();
             if (!dict.contains(wordUpper)) {
                 throw new IllegalArgumentException("Word not in dictionary: " + wordUpper);
@@ -269,6 +280,5 @@ public class Main {
             System.out.println("Invalid move: " + e.getMessage());
             return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag, dict);
         }
-
     }
 }
