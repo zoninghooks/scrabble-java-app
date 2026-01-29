@@ -120,4 +120,13 @@ public class TileBag {
         tiles.add(tile);
         shuffle();
     }
+
+    public String toSaveStirng() {
+        StringBuilder sb = new StringBuilder();
+        for (Tile t : tiles) {
+            if (sb.length() > 0) sb.append(",");
+            sb.append(t.toSaveString());
+        }
+        return sb.toString();
+    }
 }

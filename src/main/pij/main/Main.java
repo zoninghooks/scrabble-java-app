@@ -1,6 +1,7 @@
 package pij.main;
 
 import java.util.Scanner;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -253,6 +254,25 @@ public class Main {
             }
         }
         
+        //saving
+
+        if (input.toUpperCase().startsWith("SAVE")) {
+            String[] parts = input.split("\\s+");
+
+            if (parts.length != 2) {
+                System.out.println("Usage: SAVE filename.txt");
+                return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag, dict);
+            }
+
+            try {
+                SaveGame.save(parts, board, ownRack, otherRack, bag, p1Score, p2Score, currentPlayer, passStreak, openGame, p1Human, p2Human);
+                System.out.println("Game saved to " + parts[1]);
+            } catch (IOException e) {
+                System.out.println("Failed to save game: " + e.getMessage());
+            }
+            return (playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag, dict));
+        }
+
         if (input.equals(",")) {
             System.out.println(playerName + " passed.");
             return Integer.MIN_VALUE;
@@ -275,7 +295,7 @@ public class Main {
             System.out.println();
             board.print();
             return gained;
-            
+
         } catch (IllegalArgumentException e){
             System.out.println("Invalid move: " + e.getMessage());
             return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag, dict);

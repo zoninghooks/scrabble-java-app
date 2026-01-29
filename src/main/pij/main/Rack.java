@@ -56,4 +56,13 @@ public class Rack {
     public Rack(Rack other) {
         this.tiles.addAll(other.getTiles());
     }
+
+    public String toSaveString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tiles.size(); i++) {
+            if (i > 0) sb.append(",");
+            sb.append(tiles.get(i).toSaveString());
+        }
+        return sb.toString();
+    }
 }

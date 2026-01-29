@@ -51,4 +51,11 @@ public final class Tile {
         }
         return "" + letter + value;
     }
+
+    public String toSaveString() {
+        if (isWildcard()) {
+            return "_" + getAssignedLetter();
+        }
+        return "" + getBoardLetter();
+    }
 }

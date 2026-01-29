@@ -361,4 +361,17 @@ public class Board {
         }
         return sb.toString();
     }
+
+    public void writeTo(PrintWriter out) {
+        for (int r = 0; r < rows(); r++) {
+            for (int c = 0; c < cols(); c++) {
+                Cell cell = cells[r][c];
+                if (!cell.isEmpty()) {
+                    char col = (char)('a' + c);
+                    int row = r + 1;
+                    out.println(col + "" + row + "" + cell.getTile().toSaveString());
+                }
+            }
+        }
+    }
 }
