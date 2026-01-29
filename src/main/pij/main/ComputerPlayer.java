@@ -42,6 +42,7 @@ public class ComputerPlayer {
                         int sc = ac - (dir == Direction.RIGHT ? i : 0);
 
                         Move move = new Move (w, sr, sc, dir);
+                        tried++;
 
                         try {
                             int needed = countNeededTiles(board, move);
@@ -50,6 +51,7 @@ public class ComputerPlayer {
                             Rack tmpRack = new Rack(rack);
                             Map<String, Tile> placed = Main.takeTilesFromRackForMove(board, move, tmpRack);
                             board.validateWords(move, placed, dict);
+                            legal++;
                             int score = board.scoreMove(move, placed);
 
                             if (best == null || score > best.score) {
