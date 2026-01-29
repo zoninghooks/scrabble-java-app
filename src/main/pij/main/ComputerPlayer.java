@@ -31,7 +31,8 @@ public class ComputerPlayer {
 
         for (String w : dict.allWords()) {
             int len = w.length();
-            if (len < 2 || len > Rack.DEFAULT_SIZE) continue;
+            if (len < 2) continue;
+            if (len > Math.max(board.rows(), board.cols())) continue;
 
             for (Direction dir : new Direction[]{Direction.RIGHT, Direction.DOWN}) {
                 for (int[] a : anchors) {
@@ -42,14 +43,13 @@ public class ComputerPlayer {
 
                         Move move = new Move (w, sr, sc, dir);
 
-                        Rack tmpRack = new Rack(rack);
-                        Map<String, Tile> placed;
                         try {
-                            tried++;
+                            int needed = countNeededTiles(board, move);
+                            if (needed == 0 || needed > Rack.DEFAULT_SIZE) continue;
                             board.validatePlacement(move);
-                            placed = Main.takeTilesFromRackForMove(board, move, tmpRack);
+                            Rack tmpRack = new Rack(rack);
+                            Map<String, Tile> placed = Main.takeTilesFromRackForMove(board, move, tmpRack);
                             board.validateWords(move, placed, dict);
-                            legal++;
                             int score = board.scoreMove(move, placed);
 
                             if (best == null || score > best.score) {
@@ -99,6 +99,21 @@ public class ComputerPlayer {
         int col = s.charAt(0) - 'a';
         int row = Integer.parseInt(s.substring(1)) - 1;
         return new int[]{row, col};
+    }
+
+    private static int countNeededTiles(Board board, Move move) {
+        int r = move.row;
+        int c = move.col;
+        int needed = 0;
+
+        for (int i = 0; i < move.word.length(); i++) {
+            if (r < 0 || r >= board.rows() || c < 0 || c >= board.cols()) return Integer.MAX_VALUE;
+            if (board.getCell(r,c).isEmpty()) needed++;
+
+            if (move.dir == Direction.RIGHT) c++;
+            else r++;
+        }
+        return needed;
     }
 }
 
