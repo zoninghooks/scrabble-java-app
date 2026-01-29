@@ -281,4 +281,32 @@ public class Main {
             return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag, dict);
         }
     }
+
+    private static Map<String, Tile> previewPlacedTiles(Board board, Move move) {
+        int r = move.row;
+        int c = move.col;
+
+        Map <String, Tile> placed = new HashMap<>();
+
+        for (int i = 0; i < move.word.length(); i++) {
+            Cell cell = board.getCell(r, c);
+
+            if (cell.isEmpty()) {
+                char typed = move.word.charAt(i);
+                char letter = Character.toUpperCase(typed);
+
+                Tile preview;
+                if (Character.isLowerCase(typed)) {
+                    preview = new Tile('_', 8);
+                    preview.assign(letter);
+                } else {
+                    preview = new Tile(letter, 0);
+                }
+                placed.put(r + "," +c, preview);
+                }
+                if (move.dir == Direction.RIGHT) c++;
+                else r++;
+        }
+        return placed;
+    }
 }
