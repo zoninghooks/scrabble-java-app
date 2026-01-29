@@ -265,17 +265,17 @@ public class Main {
             if (!dict.contains(wordUpper)) {
                 throw new IllegalArgumentException("Word not in dictionary: " + wordUpper);
             }
-            board.validatePlacement(move);
-            var placed = takeTilesFromRackForMove(board, move, ownRack);
-            board.validateWords(move, placed, dict);
+            Map<String, Tile> preview = previewPlacedTiles(board, move);
+            board.validateWords(move, preview, dict);
+            Map<String, Tile> placed = takeTilesFromRackForMove(board, move, ownRack);
             int gained = board.scoreMove(move, placed);
             board.placeWord(move, placed);
             ownRack.refillFrom(bag, Rack.DEFAULT_SIZE);
 
             System.out.println();
             board.print();
-
             return gained;
+            
         } catch (IllegalArgumentException e){
             System.out.println("Invalid move: " + e.getMessage());
             return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag, dict);
