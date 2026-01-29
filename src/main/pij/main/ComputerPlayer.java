@@ -9,7 +9,7 @@ public class ComputerPlayer {
         public final Map<String, Tile> placed;
         public final int score;
 
-        public Result(Move move, Map<String, Tile>, int score) {
+        public Result(Move move, Map<String, Tile> placed, int score) {
             this.move = move;
             this.placed = placed;
             this.score = score;
@@ -30,7 +30,7 @@ public class ComputerPlayer {
             int len = w.length();
             if (len < 2 || len > Rack.DEFAULT_SIZE) continue;
 
-            for (DIrection dir : new Direction[]{DIrection.Right, Direction.DOWN}) {
+            for (Direction dir : new Direction[]{Direction.RIGHT, Direction.DOWN}) {
                 for (int[] a : anchors) {
                     int ar = a[0], ac =a[1];
                     for (int i = 0; i < len; i++) {
@@ -51,6 +51,7 @@ public class ComputerPlayer {
                             if (best == null || score > best.score) {
                                 best = new Result(move, placed, score);
                             }
+                        } catch (RuntimeException ex) {
                         }
                     }
                 }
@@ -63,7 +64,7 @@ public class ComputerPlayer {
 
     private static List<int[]> findAnchors (Board board) {
         ArrayList<int[]> out = new ArrayList<>();
-        int n = board.row();
+        int n = board.rows();
         int m = board.cols();
 
         boolean anyTile = false;

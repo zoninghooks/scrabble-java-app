@@ -178,7 +178,7 @@ public class Main {
         }
     }
 
-    private static Map<String, Tile> takeTilesFromRackForMove(Board board, Move move, Rack rack){
+    public static Map<String, Tile> takeTilesFromRackForMove(Board board, Move move, Rack rack){
         int r = move.row;
         int c = move.col;
 
