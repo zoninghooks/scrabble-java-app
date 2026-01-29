@@ -19,6 +19,9 @@ public class ComputerPlayer {
     public static Result findBestMove(Board board, Rack rack, WordList dict) {
         List<int[]> anchors = findAnchors(board);
 
+        int tried = 0;
+        int legal =0;
+
         if (anchors.isEmpty()) {
             int[] start = parseLabel(board.getStartPositionLabel());
             anchors.add(start);
@@ -42,10 +45,11 @@ public class ComputerPlayer {
                         Rack tmpRack = new Rack(rack);
                         Map<String, Tile> placed;
                         try {
+                            tried++;
                             board.validatePlacement(move);
                             placed = Main.takeTilesFromRackForMove(board, move, tmpRack);
                             board.validateWords(move, placed, dict);
-
+                            legal++;
                             int score = board.scoreMove(move, placed);
 
                             if (best == null || score > best.score) {
@@ -57,6 +61,7 @@ public class ComputerPlayer {
                 }
             }
         } 
+        System.out.println("Computer tried = " + tried + " legal = " + legal + " best = " + (best==null ? "null" : best.move.word));
         return best;
     }
 
@@ -72,16 +77,12 @@ public class ComputerPlayer {
         for (int r = 0; r < n; r++) {
             for (int c = 0; c < m; c++) {
                 Cell cell = board.getCell(r, c);
-                if (!cell.isEmpty()) {
-                    anyTile = true;
-                    continue;
-                }
+                if (!cell.isEmpty()) continue; 
                 if (hasAdjacentTile(board, r, c, n, m)) {
                     out.add(new int[]{r, c});
                 }
             }
         }
-        if (anyTile) out.clear();
         return out;
     }
 
