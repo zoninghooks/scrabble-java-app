@@ -24,7 +24,8 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-
+        
+        System.out.println();
         printBanner();
 
         char boardChoice = askChoice(
@@ -117,6 +118,7 @@ public class Main {
                 }
             }
 
+            System.out.println();
             System.out.println("Player 1 score: " + p1Score);
             System.out.println("Player 2 score: " + p2Score);
 

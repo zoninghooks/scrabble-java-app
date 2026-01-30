@@ -262,19 +262,20 @@ public class Board {
             if (move.dir == Direction.RIGHT) c++;
             else r++;
 
-            if (!placedNewTile) {
-                throw new IllegalArgumentException("Move must place at least one new tile.");
-            }
-
-            if (boardHasTiles && !touchesExisting) {
-                throw new IllegalArgumentException("Move is not connected to existing tiles.");
-            }
-
-            if (!boardHasTiles && !coversStart) {
-                throw new IllegalArgumentException(
-                    "First move must cover the start square " + getStartPositionLabel() + ".");
-            }
         }
+
+        if (!placedNewTile) {
+            throw new IllegalArgumentException("Move must place at least one new tile.");
+        }
+
+        if (boardHasTiles && !touchesExisting) {
+            throw new IllegalArgumentException("Move is not connected to existing tiles.");
+        }
+
+        if (!boardHasTiles && !coversStart) {
+            throw new IllegalArgumentException(
+            "First move must cover the start square " + getStartPositionLabel() + ".");
+            }
     }
 
     public int scoreMove (Move move, Map<String, Tile> placed) {
