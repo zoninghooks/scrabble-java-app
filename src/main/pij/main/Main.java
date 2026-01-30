@@ -31,7 +31,7 @@ public class Main {
                     board = new Board(filename);
                     break;
                 } catch (RuntimeException e) {
-                    System.out.println("This is not a valid file. Please enter the file name of the board:");
+                    System.out.println("This is not a valid file. " + e.getMessage());
                 }
             }   
         }   

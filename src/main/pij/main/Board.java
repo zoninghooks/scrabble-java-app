@@ -52,14 +52,8 @@ public class Board {
         in = Board.class.getClassLoader().getResourceAsStream("resources/" + filename);
         if (in != null) return in;
 
-        Path here = Paths.get("").toAbsolutePath();
-        for (int up = 0; up < 12 && here != null; up++, here = here.getParent()) {
-            Path p1 = here.resolve("resources").resolve(filename);
-            if (Files.exists(p1)) return Files.newInputStream(p1);
-
-            Path p2 = here.resolve("src").resolve("main").resolve("resources").resolve(filename);
-            if (Files.exists(p2)) return Files.newInputStream(p2);
-        }
+        Path p = Paths.get("resources").resolve(filename);
+        if (Files.exists(p)) return Files.newInputStream(p);
 
         throw new FileNotFoundException("Could not find " + filename);
     }
