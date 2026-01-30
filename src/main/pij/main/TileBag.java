@@ -19,7 +19,7 @@ public class TileBag {
 
     // Example line: 8 x [A1]   or 2 x [_8]
     private static final Pattern LINE =
-            Pattern.compile("\\s*(\\d+)\\s*x\\s*\\[([A-Z_])\\s*(-?\\d+)\\]\\s*");
+            Pattern.compile("\\s*(\\d+)\\s*x\\s*\\[([A-Z_])\\s*(-?\\d+)\\]\\s*"); // this is so that 8 x [A1] , 2x[_8] or extra spaces added can also be read.
 
     private final ArrayList<Tile> tiles = new ArrayList<>();
     private final Random rng = new Random();

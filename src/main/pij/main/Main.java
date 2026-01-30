@@ -4,23 +4,23 @@ import java.util.Scanner;
 import java.util.HashMap;
 import java.util.Map;
 
-/* 
-* This is the main console for the scrabble game.
-* This class loads the board, sets up both human and computer players, manages player's turns, updates scores.
-* This class also ends the game when both players pass.
-*/
+/** 
+ * This is the main console for the scrabble game.
+ * This class loads the board, sets up both human and computer players, manages player's turns, updates scores.
+ * This class also ends the game when both players pass.
+ */
 
 public class Main {
-    /* 
-    * Flow: 
-    * <ul>
-    *     <li> Show banner </li>
-    *     <li> Asks user if they want default board or custom board to be use. </li>
-    *     <li> Choose player types, human or computer. </li>
-    *     <li> Sets up dictionary, tile bag and racks. </li>
-    *     <li> Alternates between player 1 and player 2. </li>
-    * </ul>
-    */
+    /** 
+     * Flow: 
+     * <ul>
+     *     <li> Show banner </li>
+     *     <li> Asks user if they want default board or custom board to be use. </li>
+     *     <li> Choose player types, human or computer. </li>
+     *     <li> Sets up dictionary, tile bag and racks. </li>
+     *     <li> Alternates between player 1 and player 2. </li>
+     * </ul>
+     */
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -142,21 +142,21 @@ public class Main {
         sc.close();
     }
 
-    /* The user can type a move in the format of {@code word,square}
-    *
-    * The square can be written in 2 ways:
-    * <ul>
-    *     <li> {@code a1} Putting the letter first then the number means that the move's direction is DOWN. </li>
-    *     <li> {@code 1a} Putting the number first then the letter means that the move's direction is RIGHT. </li>
-    * </ul>
-    * 
-    * Lower case letters is to indicate a wildcard is being used.
-    * 
-    * @param input raw user input (e.g. {@code "word,a1"} or {@code "word,1a"}).
-    * @return a {@link Move} containing the word, start row/col, and direction.
-    * @throws IllegalArgumentException if the user's input is not in the expected format.
-    *
-    */
+    /** The user can type a move in the format of {@code word,square}
+     *
+     * The square can be written in 2 ways:
+     * <ul>
+     *     <li> {@code a1} Putting the letter first then the number means that the move's direction is DOWN. </li>
+     *     <li> {@code 1a} Putting the number first then the letter means that the move's direction is RIGHT. </li>
+     * </ul>
+     * <p>
+     * Lower case letters is to indicate a wildcard is being used.
+     * 
+     * @param input raw user input (e.g. {@code "word,a1"} or {@code "word,1a"}).
+     * @return a {@link Move} containing the word, start row/col, and direction.
+     * @throws IllegalArgumentException if the user's input is not in the expected format.
+     *
+     */
 
     private static Move parseMove(String input){
         String[] parts = input.split(",", -1);
@@ -187,9 +187,9 @@ public class Main {
         return new Move(word, row, col, dir);
     }
 
-    /*
-    * Prints the intro ASCII banner at the start of the program.
-    */
+    /**
+     * Prints the intro ASCII banner at the start of the program.
+     */
 
     private static void printBanner(){
         System.out.println();
@@ -199,13 +199,13 @@ public class Main {
         System.out.println();
     }
 
-    /* 
-    * Recursively prompts the user until they enter one of the valid options.
-    * @param scanner sc used to read user input.
-    * @param a is the first valid option.
-    * @param b is the other valid option.
-    * @return the character chosen {@code a} or {@code b}.
-    */
+    /** 
+     * Recursively prompts the user until they enter one of the valid options.
+     * @param scanner sc used to read user input.
+     * @param a is the first valid option.
+     * @param b is the other valid option.
+     * @return the character chosen {@code a} or {@code b}.
+     */
 
     private static char askChoice(Scanner sc, String prompt, char a, char b){
         while (true){
@@ -222,31 +222,32 @@ public class Main {
         }
     }
 
-    /*
-    * Removes the tiles the player has used from their move.
-    *
-    * The method: 
-    * <ul>
-    *     <li> Shows the rack (and the opponents rack too if the game is open). </li>
-    *     <li> Read the users input (or the move the ComputerPlayer generated). </li>
-    *     <li> Allows the player to pass go by typing {@code ","}. </li>
-    *     <li> Validates the placement is legal and checks the word through the dictionary (wordslist.txt). </li>
-    *     <li> Adds the score for the move then refills the now missing letters from the rack. </li>
-    * </ul>
-    * 
-    * If the player inputs an invalid move they are recursively prompted until they make a valid move.
-    * 
-    * @param scanner sc used to read user input.
-    * @param playerName label used in console output. (e.g. {@code "Player 1"})
-    * @param isHuman is true if the player needs to type their move, this parameter is false for the computer player.
-    * @param openGame true to show the opponent's rack each turn.
-    * @param board the current board.
-    * @param ownRack the current player's rack.
-    * @param otherRack the other rack (opponent's rack) it is only displayed in open game.
-    * @param bag is the tile bag used to refill racks after a successful move.
-    * @param dict dictionary used to validate played words. (checks through wordslist.txt)
-    * @return points gained for the move; {@link Integer#MIN_VALUE} if the player passed. (MIN_VALUE being 0.)
-    */
+    /**
+     * Removes the tiles the player has used from their move.
+     *
+     * The method: 
+     * <ul>
+     *     <li> Shows the rack (and the opponents rack too if the game is open). </li>
+     *     <li> Read the users input (or the move the ComputerPlayer generated). </li>
+     *     <li> Allows the player to pass go by typing {@code ","}. </li>
+     *     <li> Validates the placement is legal and checks the word through the dictionary (wordslist.txt). </li>
+     *     <li> Adds the score for the move then refills the now missing letters from the rack. </li>
+     * </ul>
+     * 
+     * <p>
+     * If the player inputs an invalid move they are recursively prompted until they make a valid move.
+     * 
+     * @param scanner sc used to read user input.
+     * @param playerName label used in console output. (e.g. {@code "Player 1"})
+     * @param isHuman is true if the player needs to type their move, this parameter is false for the computer player.
+     * @param openGame true to show the opponent's rack each turn.
+     * @param board the current board.
+     * @param ownRack the current player's rack.
+     * @param otherRack the other rack (opponent's rack) it is only displayed in open game.
+     * @param bag is the tile bag used to refill racks after a successful move.
+     * @param dict dictionary used to validate played words. (checks through wordslist.txt)
+     * @return points gained for the move; {@link Integer#MIN_VALUE} if the player passed. (MIN_VALUE being 0.)
+     */
 
     public static Map<String, Tile> takeTilesFromRackForMove(Board board, Move move, Rack rack){
         int r = move.row;
@@ -352,9 +353,9 @@ public class Main {
         }
     }
 
-    /* 
-    * The preview map is used to check that a move does not accidentally create invalid words when newly placed tiles touch existing tiles on the board.
-    */
+    /** 
+     * The preview map is used to check that a move does not accidentally create invalid words when newly placed tiles touch existing tiles on the board.
+     */
 
 
     private static Map<String, Tile> previewPlacedTiles(Board board, Move move) {
