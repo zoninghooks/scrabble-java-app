@@ -13,7 +13,7 @@ import java.util.Map;
  * This is the Scrabble style board class.
  * <p>
  * The board is loaded from a text file. 
- * (By default it is defaultBoard.txt users can manually create their own custom boards too, 
+ * (By default it is /resources/defaultBoard.txt users can manually create their own custom boards too, 
  *  the size of the board and starting position can be changed. An example is customBoard.txt)
  * 
  * Each cell can have: 

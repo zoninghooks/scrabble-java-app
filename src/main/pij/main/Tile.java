@@ -89,7 +89,7 @@ public final class Tile {
     /**
      * Returns the string representation used when printing the board.
      * <p>
-     * Wildcards display their assigned letter (lowercase) and value. {@code [_8]}
+     * Wildcards display their assigned letter (lowercase) and value. {@code "[_8]"}
      *
      * @return board display string
      */
