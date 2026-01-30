@@ -303,7 +303,14 @@ public class Main {
 
         System.out.println("It's your turn, " + playerName + " ! Your tiles:");
         System.out.println(ownRack);
-        System.out.println("Please enter your move in the format word, square. Enter ',' to pass the turn");
+        System.out.println();
+        System.out.println("Please enter your move in the format: \"word,square\" (without the quotes)\r\n" + //
+                        "For example, for suitable tile rack and board configuration, a downward move\r\n" + //
+                        "could be \"HI,f4\" and a rightward move could be \"HI,4f\".\r\n" + //
+                        "\r\n" + //
+                        "In the word, upper-case letters are standard tiles and lower-case letters\r\n" + //
+                        "are wildcards.\r\n" + //
+                        "Entering \",\" passes the turn.");
 
         String input;
 
@@ -347,8 +354,14 @@ public class Main {
             board.print();
             return gained;
             
-        } catch (IllegalArgumentException e){
-            System.out.println("Invalid move: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            if ("FORMAT".equals(e.getMessage())) {
+                System.out.println("Illegal move format");
+            } else {
+                System.out.println("Invalid move: " + e.getMessage());
+                System.out.println();
+                board.print();
+            }
             return playTurn(sc, playerName, isHuman, openGame, board, ownRack, otherRack, bag, dict);
         }
     }
