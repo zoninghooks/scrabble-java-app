@@ -232,12 +232,17 @@ public class Board {
         boolean boardHasTiles = hasAnyPlacedTiles();
         boolean touchesExisting = false;
         boolean placedNewTile = false;
+        boolean coversStart = false;
 
         for (int i = 0; i < move.word.length(); i++) {
             char ch = Character.toUpperCase(move.word.charAt(i));
 
             if (r < 0 || r >= n || c < 0 || c >= m) {
                 throw new IllegalArgumentException("Move goes out of bounds.");
+            }
+
+            if (!boardHasTiles && r == startRow && c == startCol) {
+                coversStart = true;
             }
 
             Cell cell = cells[r][c];
@@ -263,6 +268,11 @@ public class Board {
 
             if (boardHasTiles && !touchesExisting) {
                 throw new IllegalArgumentException("Move is not connected to existing tiles.");
+            }
+
+            if (!boardHasTiles && !coversStart) {
+                throw new IllegalArgumentException(
+                    "First move must cover the start square " + getStartPositionLabel() + ".");
             }
         }
     }
