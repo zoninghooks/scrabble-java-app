@@ -121,7 +121,17 @@ public class Main {
             System.out.println("Player 2 score: " + p2Score);
 
             if (passStreak >= 2) {
-                System.out.println("Both players passed. Game over.");
+                System.out.println("Game Over!");
+                System.out.println("Player 1 scored " + p1Score + " points.");
+                System.out.println("Player 2 scored " + p2Score + " points.");
+
+                if (p1Score > p2Score) {
+                    System.out.println("Player 1 wins!");
+                } else if (p2Score > p1Score) {
+                    System.out.println("Player 2 wins!");
+                } else {
+                    System.out.println("It's a draw!");
+                }
                 break;
             }
 
@@ -177,7 +187,7 @@ public class Main {
         } else {
             int i = 0;
             while (i < pos.length() && Character.isDigit(pos.charAt(i))) i++;
-            if (i == 0 || i >= pos.length()) throw new IllegalArgumentException("Bad sqaure: " + pos);
+            if (i == 0 || i >= pos.length()) throw new IllegalArgumentException("Bad square: " + pos);
 
             row = Integer.parseInt(pos.substring(0, i)) - 1;
             col = pos.charAt(i) - 'a';
@@ -246,7 +256,7 @@ public class Main {
      * @param otherRack the other rack (opponent's rack) it is only displayed in open game.
      * @param bag is the tile bag used to refill racks after a successful move.
      * @param dict dictionary used to validate played words. (checks through wordslist.txt)
-     * @return points gained for the move; {@link Integer#MIN_VALUE} if the player passed. (MIN_VALUE being 0.)
+     * @return points gained for the move; {@link Integer#MIN_VALUE} if the player passed.
      */
 
     public static Map<String, Tile> takeTilesFromRackForMove(Board board, Move move, Rack rack){
@@ -333,6 +343,8 @@ public class Main {
         
         if (input.equals(",")) {
             System.out.println(playerName + " passed.");
+            System.out.println();
+            board.print();
             return Integer.MIN_VALUE;
         }
 
@@ -345,6 +357,8 @@ public class Main {
             }
             Map<String, Tile> preview = previewPlacedTiles(board, move);
             board.validateWords(move, preview, dict);
+            Rack testRack = new Rack(ownRack);
+            takeTilesFromRackForMove(board, move, testRack);
             Map<String, Tile> placed = takeTilesFromRackForMove(board, move, ownRack);
             int gained = board.scoreMove(move, placed);
             board.placeWord(move, placed);
