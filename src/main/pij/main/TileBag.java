@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Represents the bag of tiles that players draw from.
+ * This class represents the bag of tiles that players draw from.
  * <p>
  * The bag is loaded from a text file (/resources/defaultTilebag.txt) and then shuffled.
  * Tiles are drawn in batches after a player takes their turn assuming they did not pass their turn.
