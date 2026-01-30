@@ -10,7 +10,7 @@ import java.nio.file.Path;
 
 import pij.main.*;
 
-public class WordListTest {
+public class WordListTests {
 
     @TempDir // Creates temporary file
     Path tempDir;
