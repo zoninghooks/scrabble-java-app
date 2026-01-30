@@ -24,7 +24,7 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        
+
         System.out.println();
         printBanner();
 
@@ -121,6 +121,29 @@ public class Main {
             System.out.println();
             System.out.println("Player 1 score: " + p1Score);
             System.out.println("Player 2 score: " + p2Score);
+            System.out.println();
+
+            Rack currentRack = (currentPlayer == 1) ? rack1 : rack2;
+            if (bag.isEmpty() && currentRack.getTiles().isEmpty()) {
+                System.out.println("Game Over!");
+
+                int p1Left = rackPoints(rack1);
+                int p2Left = rackPoints(rack2);
+                
+                p1Score -= p1Left;
+                p2Score -= p2Left;
+
+                if (currentPlayer == 1) p1Score += p2Left;
+                else p2Score += p1Left;
+
+                System.out.println("Player 1 scored " + p1Score + " points.");
+                System.out.println("Player 2 scored " + p2Score + " points.");
+                if (p1Score > p2Score) System.out.println("Player 1 wins!");
+                else if (p2Score > p1Score) System.out.println("Player 2 wins!");
+                else System.out.println("It's a draw!");
+
+                break;
+            }
 
             if (passStreak >= 2) {
                 System.out.println("Game Over!");
@@ -233,6 +256,22 @@ public class Main {
         System.out.println("Invalid choice. Please enter '" + a + "' or '" + b + "'.");
         }
     }
+
+    /**
+     * Calculates the total point value of tiles remaining in a rack.
+     * Used to determine the winner at the end of the game, when all the tiles have depleted.
+     *
+     * @param rack the rack to count points for
+     * @return sum of tile values still in the rack
+     */
+    private static int rackPoints(Rack rack) {
+        int sum = 0;
+        for (Tile t : rack.getTiles()) {
+            sum += t.getValue();
+        }
+        return sum;
+    }
+
 
     /**
      * Removes the tiles the player has used from their move.
@@ -414,4 +453,6 @@ public class Main {
         }
         return placed;
     }
+
+
 }
